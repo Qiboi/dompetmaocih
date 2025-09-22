@@ -20,17 +20,18 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const session = await getServerSession(authOptions);
     if (!session) {
         return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
     try {
+        const { id } = await params;
         const { category, amount, frequency, startDate, endDate, members, active } = await req.json();
 
         const updated = await Schedule.findByIdAndUpdate(
-            params.id,
+            id,
             { category, amount, frequency, startDate, endDate, members, active },
             { new: true, runValidators: true }
         );
@@ -45,14 +46,15 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const session = await getServerSession(authOptions);
     if (!session) {
         return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
     try {
-        const deleted = await Schedule.findByIdAndDelete(params.id);
+        const { id } = await params;
+        const deleted = await Schedule.findByIdAndDelete(id);
         if (!deleted) {
             return NextResponse.json({ success: false, message: "Schedule not found" }, { status: 404 });
         }

@@ -12,12 +12,10 @@ import {
 } from "@/components/ui/sheet";
 import SavingsSummary from "@/components/saving-summary";
 import BackgroundDecor from "@/components/background-decor";
-import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function LandingPage() {
   const { status } = useSession();
-  const router = useRouter();
 
   const showSession = () => {
     if (status === "authenticated") {

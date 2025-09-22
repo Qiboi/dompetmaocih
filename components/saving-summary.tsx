@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Users, PiggyBank } from "lucide-react";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 
 interface SavingsSummaryProps {
     membersCount?: number | null;
@@ -38,9 +38,8 @@ export default function SavingsSummary({
     compact = false,
     onViewDetails,
 }: SavingsSummaryProps) {
-    const { data: session } = useSession();
+    // const { data: session } = useSession();
     if (compact) {
-        // Small pill-style summary for navbar or header
         return (
             <div className="inline-flex items-center gap-3 px-3 py-2 rounded-full bg-white/90 shadow-sm backdrop-blur-md">
                 <div className="flex items-center gap-2">
