@@ -2,6 +2,7 @@
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useTopLoader } from "nextjs-toploader";
 import Link from "next/link";
 
 import { GalleryVerticalEnd } from "lucide-react";
@@ -17,26 +18,34 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const [error, setError] = useState("");
   const router = useRouter();
+  const loader = useTopLoader();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
+    loader.start();
+    try {
+      const formData = new FormData(event.currentTarget);
 
-    const formData = new FormData(event.currentTarget);
+      const res = await signIn("credentials", {
+        username: formData.get("username"),
+        password: formData.get("password"),
+        redirect: false,
+      });
 
-    const res = await signIn("credentials", {
-      username: formData.get("username"),
-      password: formData.get("password"),
-      redirect: false,
-    });
+      if (res?.error) {
+        setError("Invalid username or password");
+        return;
+      }
 
-    if (res?.error) {
-      setError("Invalid username or password");
-      return;
+      router.push("/dashboard");
+
+    } catch {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      loader.done();
     }
 
-    // Jika sukses → redirect ke halaman utama
-    router.push("/");
   };
 
   return (
